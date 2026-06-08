@@ -1,0 +1,19 @@
+{
+  "items": [
+    { "key": "account_title", "value": "アカウント" },
+    { "key": "no_account", "value": "アカウントがありません" },
+    { "key": "create_new", "value": "新規作成" },
+    { "key": "create_account", "value": "アカウントを作成" },
+    { "key": "delete", "value": "削除" },
+    { "key": "select", "value": "選択" },
+    { "key": "enter_username_placeholder", "value": "ユーザー名を入力..." },
+    { "key": "max_account", "value": "アカウントは最大4つまで作成できます" },
+    { "key": "no_storage", "value": "ストレージ容量が不足しています" },
+    { "key": "save", "value": "保存" },
+    { "key": "back_to_menu", "value": "メインメニューに戻る" },
+    { "key": "save_success", "value": "保存されたデータ" },
+    { "key": "save_failed", "value": "保存に失敗しました" },
+    { "key": "keybind", "value": "- ESC = メニューの切り替え\n- B = バッグの切り替え" }
+
+  ]
+}

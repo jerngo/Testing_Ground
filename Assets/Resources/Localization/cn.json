@@ -1,0 +1,19 @@
+{
+  "items": [
+    { "key": "account_title", "value": "账户" },
+    { "key": "no_account", "value": "没有账户" },
+    { "key": "create_new", "value": "创建新账户" },
+    { "key": "create_account", "value": "创建账户" },
+    { "key": "delete", "value": "删除" },
+    { "key": "select", "value": "选择" },
+    { "key": "enter_username_placeholder", "value": "输入用户名..." },
+    { "key": "max_account", "value": "最多只能创建4个账户" },
+    { "key": "no_storage", "value": "存储空间不足" },
+    { "key": "save", "value": "节省" },
+    { "key": "back_to_menu", "value": "返回主菜单" },
+    { "key": "save_success", "value": "数据已保存" },
+    { "key": "save_failed", "value": "保存失败" },
+    { "key": "keybind", "value": "- ESC = 切换菜单\n- B = 切换背包" }
+
+  ]
+}

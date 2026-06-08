@@ -1,0 +1,18 @@
+{
+  "items": [
+    { "key": "account_title", "value": "Account" },
+    { "key": "no_account", "value": "No Account" },
+    { "key": "create_new", "value": "Create New" },
+    { "key": "create_account", "value": "Create Account" },
+    { "key": "delete", "value": "Delete" },
+    { "key": "select", "value": "Select" },
+    { "key": "enter_username_placeholder", "value": "Enter Username..." },
+    { "key": "max_account", "value": "Maximum 4 accounts allowed" },
+    { "key": "no_storage", "value": "Not Enough Storage" },
+    { "key": "save", "value": "Save" },
+    { "key": "back_to_menu", "value": "Back To Main Menu" },
+    { "key": "save_success", "value": "Data Saved" },
+    { "key": "save_failed", "value": "Save Failed" },
+    { "key": "keybind", "value": "- ESC = toggle menu\n- B = toggle bag" }
+  ]
+}

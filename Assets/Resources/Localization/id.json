@@ -1,0 +1,20 @@
+{
+  "items": [
+    { "key": "account_title", "value": "Akun" },
+    { "key": "no_account", "value": "Tidak Ada Akun" },
+    { "key": "create_new", "value": "Buat Baru" },
+    { "key": "create_account", "value": "Buat Akun" },
+    { "key": "delete", "value": "Hapus" },
+    { "key": "select", "value": "Pilih" },
+    { "key": "enter_username_placeholder", "value": "Masukkan Username..." },
+    { "key": "max_account", "value": "Hanya Boleh Maksimum 4 Akun" },
+    { "key": "no_storage", "value": "Penyimpanan Tidak Cukup" },
+    { "key": "save", "value": "Save" },
+    { "key": "back_to_menu", "value": "Kembali Ke Menu Utama" },
+    { "key": "save_success", "value": "Data Tersimpan" },
+    { "key": "save_failed", "value": "Penyimpanan Gagal" },
+    { "key": "keybind", "value": "- ESC = toggle menu\n- B = toggle tas" }
+
+
+  ]
+}
