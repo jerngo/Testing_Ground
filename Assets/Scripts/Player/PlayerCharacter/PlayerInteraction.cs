@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -11,12 +12,12 @@ public class PlayerInteraction : MonoBehaviour
         controller = GetComponent<PlayerController>();
     }
 
-    void Update()
+    public void OnInteract(InputAction.CallbackContext ctx)
     {
-        if (
-            currentInteractable != null &&
-            controller.interactPressed
-        )
+        Debug.Log("Interact pressed");
+        if (!ctx.performed) return;
+
+        if (currentInteractable != null)
         {
             currentInteractable.Interact(controller);
         }

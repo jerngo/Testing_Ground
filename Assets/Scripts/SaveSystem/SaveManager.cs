@@ -1,6 +1,9 @@
-using UnityEngine;
+using Newtonsoft.Json;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Cryptography;
+using System.Text;
+using System.Xml;
+using UnityEngine;
 
 public class SaveManager : MonoBehaviour
 {
@@ -13,6 +16,11 @@ public class SaveManager : MonoBehaviour
 
     const int MAX_SLOTS = 3;
 
+    // AES key & IV — ganti dengan nilai unik untuk game kamu
+    // Key harus 16, 24, atau 32 bytes; IV harus 16 bytes
+    private static readonly byte[] AES_KEY = Encoding.UTF8.GetBytes("MySecretKey12345");   // 16 bytes
+    private static readonly byte[] AES_IV = Encoding.UTF8.GetBytes("MySecretIV123456");   // 16 bytes
+
     void Awake()
     {
         if (Instance == null)
@@ -23,6 +31,7 @@ public class SaveManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
 
         saveFolder = Application.persistentDataPath + "/saves/";
@@ -31,6 +40,8 @@ public class SaveManager : MonoBehaviour
             Directory.CreateDirectory(saveFolder);
     }
 
+    // ─── Path Helpers ─────────────────────────────────────────────────────────
+
     string GetAccountFolder(string username)
     {
         return saveFolder + username + "/";
@@ -38,21 +49,51 @@ public class SaveManager : MonoBehaviour
 
     string GetSlotPath(string username, int slot)
     {
-        return GetAccountFolder(username) + "slot" + slot + ".dat";
+        return GetAccountFolder(username) + "slot" + slot + ".sav";
     }
 
-    public PlayerSaveData LoadPlayerData(int slot)
+    // ─── Encryption / Decryption ──────────────────────────────────────────────
+
+    private string Encrypt(string plainText)
     {
-        if (AccountManager.Instance.currentAccount == null)
+        using (Aes aes = Aes.Create())
         {
-            Debug.Log("No account selected");
-            return null;
+            aes.Key = AES_KEY;
+            aes.IV = AES_IV;
+
+            ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+            using (MemoryStream ms = new MemoryStream())
+            using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+            {
+                byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
+                cs.Write(plainBytes, 0, plainBytes.Length);
+                cs.FlushFinalBlock();
+                return System.Convert.ToBase64String(ms.ToArray());
+            }
         }
-
-        string username = AccountManager.Instance.currentAccount.username;
-
-        return Load(username, slot);
     }
+
+    private string Decrypt(string cipherText)
+    {
+        using (Aes aes = Aes.Create())
+        {
+            aes.Key = AES_KEY;
+            aes.IV = AES_IV;
+
+            ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+            byte[] cipherBytes = System.Convert.FromBase64String(cipherText);
+
+            using (MemoryStream ms = new MemoryStream(cipherBytes))
+            using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+            using (StreamReader sr = new StreamReader(cs, Encoding.UTF8))
+            {
+                return sr.ReadToEnd();
+            }
+        }
+    }
+
+    // ─── Core Save / Load ─────────────────────────────────────────────────────
 
     public bool Save(string username, int slot, PlayerSaveData data)
     {
@@ -74,17 +115,14 @@ public class SaveManager : MonoBehaviour
             }
 
             string folder = GetAccountFolder(username);
-
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
 
+            string json = JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.None);
+            string encrypted = Encrypt(json);
             string path = GetSlotPath(username, slot);
 
-            using (FileStream stream = new FileStream(path, FileMode.Create))
-            {
-                BinaryFormatter formatter = new BinaryFormatter();      
-                formatter.Serialize(stream, data);
-            }
+            File.WriteAllText(path, encrypted, Encoding.UTF8);
 
             return true;
         }
@@ -107,20 +145,17 @@ public class SaveManager : MonoBehaviour
         string path = GetSlotPath(username, slot);
 
         if (!File.Exists(path))
-        {
             return new PlayerSaveData();
-        }
 
         try
         {
-            using (FileStream stream = new FileStream(path, FileMode.Open))
-            {
-                BinaryFormatter formatter = new BinaryFormatter();
-                PlayerSaveData data = (PlayerSaveData)formatter.Deserialize(stream);
-                currentSlot = slot;
-                currentSaveData = data;
-                return data;
-            }
+            string encrypted = File.ReadAllText(path, Encoding.UTF8);
+            string json = Decrypt(encrypted);
+
+            PlayerSaveData data = JsonConvert.DeserializeObject<PlayerSaveData>(json);
+            currentSlot = slot;
+            currentSaveData = data;
+            return data;
         }
         catch (System.Exception e)
         {
@@ -129,10 +164,23 @@ public class SaveManager : MonoBehaviour
         }
     }
 
+    // ─── Public API (sama seperti sebelumnya) ─────────────────────────────────
+
+    public PlayerSaveData LoadPlayerData(int slot)
+    {
+        if (AccountManager.Instance.currentAccount == null)
+        {
+            Debug.Log("No account selected");
+            return null;
+        }
+
+        string username = AccountManager.Instance.currentAccount.username;
+        return Load(username, slot);
+    }
+
     public bool SlotExists(string username, int slot)
     {
-        string path = GetSlotPath(username, slot);
-        return File.Exists(path);
+        return File.Exists(GetSlotPath(username, slot));
     }
 
     public void DeleteAccountSave(string username)
@@ -142,14 +190,12 @@ public class SaveManager : MonoBehaviour
         try
         {
             if (Directory.Exists(folder))
-            {
                 Directory.Delete(folder, true);
-            }
         }
         catch (System.Exception e)
         {
-            Debug.LogError("Failed to delete account slot: " + e.Message);
-        }   
+            Debug.LogError("Failed to delete account save: " + e.Message);
+        }
     }
 
     public void DeleteSlot(string username, int slot)
@@ -159,9 +205,7 @@ public class SaveManager : MonoBehaviour
         try
         {
             if (File.Exists(path))
-            {
                 File.Delete(path);
-            }
         }
         catch (System.Exception e)
         {
@@ -169,23 +213,22 @@ public class SaveManager : MonoBehaviour
         }
     }
 
-    public void SaveNewGame(string username, int slot) {
+    public void SaveNewGame(string username, int slot)
+    {
         if (AccountManager.Instance.currentAccount == null)
         {
             Debug.LogError("No account selected");
             return;
         }
 
-        PlayerSaveData data = new PlayerSaveData();
-
-        // Player
-
-        data.hp = 100;
-        data.posX = 0;
-        data.posY = 0;
-        data.username = username;
-        //Date
-        data.saveTime = System.DateTime.Now.ToString("dd MMM yyyy HH:mm");
+        PlayerSaveData data = new PlayerSaveData
+        {
+            hp = 100,
+            posX = 0,
+            posY = 0,
+            username = username,
+            saveTime = System.DateTime.Now.ToString("dd MMM yyyy HH:mm")
+        };
 
         Save(username, slot, data);
     }
@@ -208,6 +251,7 @@ public class SaveManager : MonoBehaviour
         data.posX = playerTransform.localPosition.x;
         data.posY = playerTransform.localPosition.y;
         data.username = username;
+
         // Chest
         foreach (Chest chest in FindObjectsByType<Chest>(FindObjectsSortMode.None))
         {
@@ -215,20 +259,18 @@ public class SaveManager : MonoBehaviour
                 data.openedChests.Add(chest.chestID);
         }
 
-        //Enemy
+        // Enemy
         foreach (EnemyBase enemy in FindObjectsByType<EnemyBase>(FindObjectsSortMode.None))
         {
             if (enemy.IsDead)
-            {
                 data.defeatedEnemies.Add(enemy.enemyID);
-            }
         }
 
         // Inventory
         var inventory = InventoryManager.Instance;
         data.inventoryItems = inventory.GetItemIDs();
 
-        //Date
+        // Date
         data.saveTime = System.DateTime.Now.ToString("dd MMM yyyy HH:mm");
 
         Save(username, slot, data);
@@ -245,18 +287,14 @@ public class SaveManager : MonoBehaviour
         foreach (Chest chest in FindObjectsByType<Chest>(FindObjectsSortMode.None))
         {
             if (currentSaveData.openedChests.Contains(chest.chestID))
-            {
                 chest.SetOpened();
-            }
         }
 
         // Enemy
         foreach (EnemyBase enemy in FindObjectsByType<EnemyBase>(FindObjectsSortMode.None))
         {
             if (currentSaveData.defeatedEnemies.Contains(enemy.enemyID))
-            {
                 enemy.DieInstant();
-            }
         }
 
         // Inventory

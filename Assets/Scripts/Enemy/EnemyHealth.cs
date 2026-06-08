@@ -90,7 +90,7 @@ public class EnemyHealth : MonoBehaviour
     {
         // dead
         isDead = true;
-        behaviour.enemyHit.gameObject.SetActive(false);
+        //behaviour.enemyHit.gameObject.SetActive(false);
         behaviour.enabled = false;
         spriteRenderer.enabled = false;
     }

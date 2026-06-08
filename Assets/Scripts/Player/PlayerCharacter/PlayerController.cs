@@ -28,7 +28,8 @@ public class PlayerController : MonoBehaviour
     public Transform playerHit;
     float hitOffsetX = 0.1793689f;
 
-    public bool interactPressed;
+    static readonly int AttackHash = Animator.StringToHash("attack");
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -38,13 +39,17 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (!IsDead) {
-            interactPressed = Keyboard.current.eKey.wasPressedThisFrame;
+        if (IsDead) return;
 
-            CheckGround();
-            Move();
-            UpdateAnimation();
-        }
+        CheckGround();
+        UpdateAnimation();
+    }
+
+    void FixedUpdate()
+    {
+        if (IsDead) return;
+
+        Move();
     }
 
     void Move()
@@ -59,21 +64,20 @@ public class PlayerController : MonoBehaviour
         );
 
         // arah karakter
-        if (moveInput.x < 0) { 
-            sr.flipX = true;
+        if (moveInput.x < 0)
+            Flip(true);
 
-            Vector3 pos = playerHit.localPosition;
-            pos.x = -hitOffsetX;
-            playerHit.localPosition = pos;
-        }
+        if (moveInput.x > 0)
+            Flip(false);
+    }
 
-        if (moveInput.x > 0) { 
-            sr.flipX = false;
+    void Flip(bool facingLeft)
+    {
+        sr.flipX = facingLeft;
 
-            Vector3 pos = playerHit.localPosition;
-            pos.x = hitOffsetX;
-            playerHit.localPosition = pos;
-        }
+        Vector3 pos = playerHit.localPosition;
+        pos.x = facingLeft ? -hitOffsetX : hitOffsetX;
+        playerHit.localPosition = pos;
     }
 
     void CheckGround()
@@ -85,11 +89,18 @@ public class PlayerController : MonoBehaviour
         );
     }
 
+    bool lastShield;
     void UpdateAnimation()
     {
-        anim.SetFloat("speed", Mathf.Abs(moveInput.x));
-        anim.SetBool("isRunning", isRunning);
-        anim.SetBool("shield", isShielding);
+        float speed = Mathf.Abs(moveInput.x);
+
+        anim.SetFloat("speed", speed);
+
+        if (lastShield != isShielding)
+        {
+            anim.SetBool("shield", isShielding);
+            lastShield = isShielding;
+        }
     }
 
     // INPUT EVENTS (Invoke Unity Events)
@@ -121,7 +132,7 @@ public class PlayerController : MonoBehaviour
     {
         if (ctx.performed)
         {
-            anim.SetTrigger("attack");
+            anim.SetTrigger(AttackHash);
         }
     }
 
@@ -183,5 +194,7 @@ public class PlayerController : MonoBehaviour
             bagUI.ToggleBag();
         }
     }
+
+    
 
 }
