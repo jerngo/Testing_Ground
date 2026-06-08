@@ -4,14 +4,22 @@ using System.Collections.Generic;
 [Serializable]
 public class PlayerSaveData
 {
-    public string username;
+    // Player
     public int hp;
     public float posX;
     public float posY;
+    public string username;
 
+    // World state
     public List<string> openedChests = new List<string>();
     public List<string> defeatedEnemies = new List<string>();
 
+    // Inventory
     public List<string> inventoryItems = new List<string>();
+
+    // Quest
+    public List<QuestProgress> questProgress = new List<QuestProgress>();
+
+    // Meta
     public string saveTime;
 }

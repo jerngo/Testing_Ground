@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83e6beb7cdc3ec3418771ef239409f8a, type: 3}
+  m_Name: Kill Boss Boar
+  m_EditorClassIdentifier: Assembly-CSharp::QuestData
+  questID: QS0003
+  questName: Kill Boar Boss
+  description: Kill Boar Boss
+  completionMode: 0
+  objectives:
+  - objectiveID: OBJ1QS0003
+    type: 0
+    targetID: boarBoss_A
+    description: Kill Boar Boss
+    requiredAmount: 1
+    currentAmount: 0
+  hasReward: 0
+  reward:
+    exp: 0
+    gold: 0
+    items: []
+  nextQuest: {fileID: 11400000, guid: cb7c51687677445499e9ed2f6c5b519c, type: 2}

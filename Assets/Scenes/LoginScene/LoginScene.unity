@@ -6333,14 +6333,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a397085505e01c4cb822b11414c8769, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveManager
+  questDatabase: {fileID: 11400000, guid: 25b7675f67fa8a149ad419723c9c474c, type: 2}
   currentSaveData:
-    username: 
     hp: 0
     posX: 0
     posY: 0
+    username: 
     openedChests: []
     defeatedEnemies: []
     inventoryItems: []
+    questProgress: []
     saveTime: 
   currentSlot: 0
 --- !u!1 &1131614832

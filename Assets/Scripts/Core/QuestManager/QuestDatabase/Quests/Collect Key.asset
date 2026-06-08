@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83e6beb7cdc3ec3418771ef239409f8a, type: 3}
+  m_Name: Collect Key
+  m_EditorClassIdentifier: Assembly-CSharp::QuestData
+  questID: QS0001
+  questName: Collect Key
+  description: Find Key
+  completionMode: 0
+  objectives:
+  - objectiveID: CT1QS001
+    type: 1
+    targetID: gate_key_1
+    description: Find Key
+    requiredAmount: 1
+    currentAmount: 0
+  hasReward: 0
+  reward:
+    exp: 0
+    gold: 0
+    items: []
+  nextQuest: {fileID: 11400000, guid: 57648ce089270ed41ba3e7f27df91ab0, type: 2}

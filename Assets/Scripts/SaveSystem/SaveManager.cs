@@ -9,6 +9,8 @@ public class SaveManager : MonoBehaviour
 {
     public static SaveManager Instance;
 
+    public QuestDatabase questDatabase;
+
     public PlayerSaveData currentSaveData;
     public int currentSlot;
 
@@ -273,6 +275,8 @@ public class SaveManager : MonoBehaviour
         // Date
         data.saveTime = System.DateTime.Now.ToString("dd MMM yyyy HH:mm");
 
+        //Quest
+        data.questProgress = QuestManager.Instance.GetSaveData();
         Save(username, slot, data);
     }
 
@@ -300,5 +304,12 @@ public class SaveManager : MonoBehaviour
         // Inventory
         var inventory = InventoryManager.Instance;
         inventory.LoadItems(currentSaveData.inventoryItems);
+
+        // Quest
+        Debug.Log("ApplyLoadedData: QuestManager.Instance = " + (QuestManager.Instance == null ? "NULL" : "OK"));
+        QuestManager.Instance.LoadSaveData(
+            currentSaveData.questProgress,
+            questDatabase.allQuests
+        );
     }
 }

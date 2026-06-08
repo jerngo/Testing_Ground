@@ -113,7 +113,8 @@ public abstract class EnemyBase : MonoBehaviour
     protected virtual void Die()
     {
         IsDead = true;
-
+        Debug.Log("ReportKill: " + enemyID);
+        QuestManager.Instance.ReportKill(enemyID);
         Debug.Log(gameObject.name + " Dead");
     }
 }
