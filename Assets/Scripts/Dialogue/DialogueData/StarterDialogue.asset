@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc026021d86638244b39b6bd806f773a, type: 3}
+  m_Name: StarterDialogue
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
+  lines:
+  - speakerName: Guy A
+    text: Hello there
+    choices: []
+    dialogueEvent: {fileID: 0}
+  - speakerName: Guy A
+    text: How are you
+    choices:
+    - choiceText: Good
+      nextDialogue: {fileID: 0}
+      dialogueEvent: {fileID: 0}
+    - choiceText: So So
+      nextDialogue: {fileID: 0}
+      dialogueEvent: {fileID: 0}
+    dialogueEvent: {fileID: 0}
+  - speakerName: Guy A
+    text: Do this for me
+    choices:
+    - choiceText: Okay
+      nextDialogue: {fileID: 0}
+      dialogueEvent: {fileID: 11400000, guid: f611678f2d1b6d442b0851b9614f1074, type: 2}
+    - choiceText: No
+      nextDialogue: {fileID: 0}
+      dialogueEvent: {fileID: 11400000, guid: 28fb04c4064eb384da33f094973f6d8b, type: 2}
+    dialogueEvent: {fileID: 0}

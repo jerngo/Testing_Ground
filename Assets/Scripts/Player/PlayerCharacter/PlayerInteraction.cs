@@ -31,6 +31,10 @@ public class PlayerInteraction : MonoBehaviour
         if (interactable != null)
         {
             currentInteractable = interactable;
+
+            // Tampilkan prompt
+            InteractPromptSpawner spawner = other.GetComponent<InteractPromptSpawner>();
+            spawner?.ShowPrompt();
         }
     }
 
@@ -39,11 +43,12 @@ public class PlayerInteraction : MonoBehaviour
         IInteractable interactable =
             other.GetComponent<IInteractable>();
 
-        if (
-            interactable != null &&
-            interactable == currentInteractable
-        )
+        if (interactable != null && interactable == currentInteractable)
         {
+            // Sembunyikan prompt
+            InteractPromptSpawner spawner = other.GetComponent<InteractPromptSpawner>();
+            spawner?.HidePrompt();
+
             currentInteractable = null;
         }
     }

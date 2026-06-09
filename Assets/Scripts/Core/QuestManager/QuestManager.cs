@@ -50,6 +50,9 @@ public class QuestManager : MonoBehaviour
         activeQuests[runtimeCopy.questID] = runtimeCopy;
 
         Debug.Log($"[Quest] Started: {runtimeCopy.questName}");
+
+        Debug.Log($"QuestManager invoking from: {this.GetInstanceID()}");
+        Debug.Log($"Subscriber count: {OnQuestStarted?.GetInvocationList().Length ?? 0}");
         OnQuestStarted?.Invoke(runtimeCopy);
 
         return true;

@@ -1,6 +1,6 @@
-using UnityEngine;
-using TMPro;
 using System.Collections;
+using TMPro;
+using UnityEngine;
 
 public class QuestHUD : MonoBehaviour
 {
@@ -9,8 +9,9 @@ public class QuestHUD : MonoBehaviour
     public TextMeshProUGUI questNameText;
     public TextMeshProUGUI objectivesText;
 
-    void OnEnable()
+    void Awake()
     {
+        UnityEngine.Debug.Log("QuestHUD OnEnable");
         QuestManager.Instance.OnQuestStarted += HandleQuestStarted;
         QuestManager.Instance.OnQuestCompleted += HandleQuestCompleted;
         QuestManager.Instance.OnObjectiveUpdated += HandleObjectiveUpdated;
@@ -18,6 +19,8 @@ public class QuestHUD : MonoBehaviour
 
     void OnDisable()
     {
+        UnityEngine.Debug.Log("QuestHUD OnDisable");
+        if (QuestManager.Instance == null) return;
         QuestManager.Instance.OnQuestStarted -= HandleQuestStarted;
         QuestManager.Instance.OnQuestCompleted -= HandleQuestCompleted;
         QuestManager.Instance.OnObjectiveUpdated -= HandleObjectiveUpdated;
@@ -27,6 +30,7 @@ public class QuestHUD : MonoBehaviour
     {
         // Cek apakah sudah ada quest aktif saat scene load (misal dari save)
         var activeQuests = QuestManager.Instance.GetAllActiveQuests();
+
         if (activeQuests.Count > 0)
             RefreshHUD(activeQuests[0]);
         else
@@ -35,6 +39,8 @@ public class QuestHUD : MonoBehaviour
 
     void HandleQuestStarted(QuestData quest)
     {
+        Debug.Log($"HandleQuestStarted dipanggil: {quest.questName}");
+        Debug.Log($"hudPanel = {hudPanel}");
         RefreshHUD(quest);
     }
 
@@ -60,7 +66,9 @@ public class QuestHUD : MonoBehaviour
 
     void RefreshHUD(QuestData quest)
     {
+        Debug.Log($"RefreshHUD: setting hudPanel active");
         hudPanel.SetActive(true);
+        Debug.Log($"hudPanel active = {hudPanel.activeSelf}");
         questNameText.text = quest.questName;
 
         // Tulis semua objective
