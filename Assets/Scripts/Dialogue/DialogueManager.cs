@@ -14,6 +14,7 @@ public class DialogueManager : MonoBehaviour
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     public void StartDialogue(DialogueData data)
@@ -22,6 +23,8 @@ public class DialogueManager : MonoBehaviour
         currentData = data;
         currentLineIndex = 0;
         dialogueUI.Show();
+
+        GameStateManager.Instance.SetState(GameState.Dialogue);
         ShowCurrentLine();
     }
 
@@ -66,7 +69,9 @@ public class DialogueManager : MonoBehaviour
     void EndDialogue()
     {
         currentData = null;
+
         dialogueUI.Hide();
+        GameStateManager.Instance.SetState(GameState.Gameplay);
     }
 
     public bool IsDialogueActive => currentData != null;

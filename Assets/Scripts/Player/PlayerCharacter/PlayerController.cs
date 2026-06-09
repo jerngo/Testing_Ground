@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         if (IsDead) return;
+        if (!GameStateManager.Instance.Is(GameState.Gameplay)) return;
 
         CheckGround();
         UpdateAnimation();
@@ -48,6 +49,13 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         if (IsDead) return;
+
+        if (!GameStateManager.Instance.Is(GameState.Gameplay))
+        {
+            // Hentikan movement saat dialogue/menu
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            return;
+        }
 
         Move();
     }
@@ -107,11 +115,17 @@ public class PlayerController : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext ctx)
     {
+        if (!GameStateManager.Instance.Is(GameState.Gameplay))
+        {
+            moveInput = Vector2.zero;
+            return;
+        }
         moveInput = ctx.ReadValue<Vector2>();
     }
 
     public void OnJump(InputAction.CallbackContext ctx)
     {
+        if (!GameStateManager.Instance.Is(GameState.Gameplay)) return;
         if (ctx.performed && isGrounded)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
@@ -130,6 +144,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnAttack(InputAction.CallbackContext ctx)
     {
+        if (!GameStateManager.Instance.Is(GameState.Gameplay)) return;
         if (ctx.performed)
         {
             anim.SetTrigger(AttackHash);
@@ -138,6 +153,12 @@ public class PlayerController : MonoBehaviour
 
     public void OnShield(InputAction.CallbackContext ctx)
     {
+        if (!GameStateManager.Instance.Is(GameState.Gameplay))
+        {
+            isShielding = false;
+            return;
+        }
+
         if (ctx.started)
             isShielding = true;
 

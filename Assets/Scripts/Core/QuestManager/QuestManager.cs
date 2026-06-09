@@ -230,11 +230,6 @@ public class QuestManager : MonoBehaviour
         activeQuests.Clear();
         completedQuests.Clear();
 
-        activeQuests.Clear();
-        completedQuests.Clear();
-
-        if (savedQuests == null) return;
-
         // Buat lookup questID -> QuestData asset
         var assetLookup = allQuestAssets.ToDictionary(q => q.questID);
 

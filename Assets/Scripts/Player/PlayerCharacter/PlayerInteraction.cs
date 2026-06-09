@@ -16,6 +16,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         Debug.Log("Interact pressed");
         if (!ctx.performed) return;
+        if (!GameStateManager.Instance.Is(GameState.Gameplay)) return;
 
         if (currentInteractable != null)
         {
