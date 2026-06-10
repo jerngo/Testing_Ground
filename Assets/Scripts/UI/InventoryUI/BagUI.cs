@@ -33,7 +33,7 @@ public class BagUI : MonoBehaviour
         {
             if (i < items.Count && items[i] != null)
             {
-                slotImages[i].sprite = items[i].itemIcon;
+                slotImages[i].sprite = items[i].icon;
 
                 Color c = slotImages[i].color;
                 c.a = 1f;

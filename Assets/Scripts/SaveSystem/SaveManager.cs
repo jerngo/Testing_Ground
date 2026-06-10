@@ -270,7 +270,7 @@ public class SaveManager : MonoBehaviour
 
         // Inventory
         var inventory = InventoryManager.Instance;
-        data.inventoryItems = inventory.GetItemIDs();
+        data.inventorySlots = inventory.GetSaveSlots();
 
         // Date
         data.saveTime = System.DateTime.Now.ToString("dd MMM yyyy HH:mm");
@@ -303,7 +303,7 @@ public class SaveManager : MonoBehaviour
 
         // Inventory
         var inventory = InventoryManager.Instance;
-        inventory.LoadItems(currentSaveData.inventoryItems);
+        inventory.LoadSlots(currentSaveData.inventorySlots);
 
         // Quest
         Debug.Log("ApplyLoadedData: QuestManager.Instance = " + (QuestManager.Instance == null ? "NULL" : "OK"));

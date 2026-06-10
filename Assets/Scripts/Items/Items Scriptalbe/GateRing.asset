@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: GateRing
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemID: gate_ring_1
-  itemIcon: {fileID: -9110350937888143367, guid: 7f977ffec299c6a499b8fcfd4a86b61f, type: 3}
   itemName: Gate RIng
-  type: 2
+  icon: {fileID: -9110350937888143367, guid: 7f977ffec299c6a499b8fcfd4a86b61f, type: 3}
+  itemType: 1
+  isStackable: 0
   attack: 0
   defense: 0

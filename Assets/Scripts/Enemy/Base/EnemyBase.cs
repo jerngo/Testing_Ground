@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public abstract class EnemyBase : MonoBehaviour
+public abstract class EnemyBase : MonoBehaviour, IDamageable
 {
     [Header("Info")]
     public string enemyID;

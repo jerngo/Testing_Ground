@@ -199,7 +199,8 @@ public class PlayerController : MonoBehaviour
     }
 
     public GameSaveUI gameSaveUI;
-    public BagUI bagUI;
+    public InventoryUI inventoryUI;
+
     public void OnOpenMenu(InputAction.CallbackContext ctx)
     {
         if (ctx.performed)
@@ -212,7 +213,7 @@ public class PlayerController : MonoBehaviour
     {
         if (ctx.performed)
         {
-            bagUI.ToggleBag();
+            inventoryUI.ToggleInventory();
         }
     }
 

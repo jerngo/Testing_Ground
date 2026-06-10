@@ -24,21 +24,16 @@ public class PlayerHit : MonoBehaviour
 
     void TryHit(Collider2D other)
     {
-        if (!other.CompareTag("Enemy"))
-            return;
-
         if (hitEnemies.Contains(other))
             return;
+
+        IDamageable damageable = other.GetComponent<IDamageable>();
+        if (damageable == null) return;
 
         hitEnemies.Add(other);
 
         Debug.Log("Hit: " + other.name);
 
-        EnemyBase enemy = other.GetComponent<EnemyBase>();
-
-        if (enemy != null)
-        {
-            enemy.TakeDamage(damage, transform.position);
-        }
+        damageable.TakeDamage(damage, transform.position);
     }
 }

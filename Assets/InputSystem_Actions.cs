@@ -190,6 +190,33 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SkillQ"",
+                    ""type"": ""Button"",
+                    ""id"": ""6a1bead1-141c-4dfb-b240-082b7a95eb6e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SkillR"",
+                    ""type"": ""Button"",
+                    ""id"": ""7e6a3ff9-0554-40e4-a485-73d214993f3f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SkillF"",
+                    ""type"": ""Button"",
+                    ""id"": ""fd7850af-524d-4457-acc1-ba173a62632b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -597,6 +624,39 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""OpenBag"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f6fec632-0019-4c8f-88ea-aa63316d9f67"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""SkillQ"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6ec2c9d3-dd4e-4591-adab-372963c5a206"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""SkillR"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e3f7a07a-3ed1-4d6a-8cbf-16db38980550"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""SkillF"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1195,6 +1255,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_Run = m_Player.FindAction("Run", throwIfNotFound: true);
         m_Player_OpenMenu = m_Player.FindAction("OpenMenu", throwIfNotFound: true);
         m_Player_OpenBag = m_Player.FindAction("OpenBag", throwIfNotFound: true);
+        m_Player_SkillQ = m_Player.FindAction("SkillQ", throwIfNotFound: true);
+        m_Player_SkillR = m_Player.FindAction("SkillR", throwIfNotFound: true);
+        m_Player_SkillF = m_Player.FindAction("SkillF", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1299,6 +1362,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Run;
     private readonly InputAction m_Player_OpenMenu;
     private readonly InputAction m_Player_OpenBag;
+    private readonly InputAction m_Player_SkillQ;
+    private readonly InputAction m_Player_SkillR;
+    private readonly InputAction m_Player_SkillF;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1354,6 +1420,18 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/OpenBag".
         /// </summary>
         public InputAction @OpenBag => m_Wrapper.m_Player_OpenBag;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SkillQ".
+        /// </summary>
+        public InputAction @SkillQ => m_Wrapper.m_Player_SkillQ;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SkillR".
+        /// </summary>
+        public InputAction @SkillR => m_Wrapper.m_Player_SkillR;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SkillF".
+        /// </summary>
+        public InputAction @SkillF => m_Wrapper.m_Player_SkillF;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1413,6 +1491,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @OpenBag.started += instance.OnOpenBag;
             @OpenBag.performed += instance.OnOpenBag;
             @OpenBag.canceled += instance.OnOpenBag;
+            @SkillQ.started += instance.OnSkillQ;
+            @SkillQ.performed += instance.OnSkillQ;
+            @SkillQ.canceled += instance.OnSkillQ;
+            @SkillR.started += instance.OnSkillR;
+            @SkillR.performed += instance.OnSkillR;
+            @SkillR.canceled += instance.OnSkillR;
+            @SkillF.started += instance.OnSkillF;
+            @SkillF.performed += instance.OnSkillF;
+            @SkillF.canceled += instance.OnSkillF;
         }
 
         /// <summary>
@@ -1457,6 +1544,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @OpenBag.started -= instance.OnOpenBag;
             @OpenBag.performed -= instance.OnOpenBag;
             @OpenBag.canceled -= instance.OnOpenBag;
+            @SkillQ.started -= instance.OnSkillQ;
+            @SkillQ.performed -= instance.OnSkillQ;
+            @SkillQ.canceled -= instance.OnSkillQ;
+            @SkillR.started -= instance.OnSkillR;
+            @SkillR.performed -= instance.OnSkillR;
+            @SkillR.canceled -= instance.OnSkillR;
+            @SkillF.started -= instance.OnSkillF;
+            @SkillF.performed -= instance.OnSkillF;
+            @SkillF.canceled -= instance.OnSkillF;
         }
 
         /// <summary>
@@ -1834,6 +1930,27 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnOpenBag(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SkillQ" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSkillQ(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SkillR" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSkillR(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SkillF" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSkillF(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

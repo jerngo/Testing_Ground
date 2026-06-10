@@ -15,7 +15,8 @@ public class PlayerSaveData
     public List<string> defeatedEnemies = new List<string>();
 
     // Inventory
-    public List<string> inventoryItems = new List<string>();
+    //public List<string> inventoryItems = new List<string>();
+    public List<InventoryItemSaveData> inventorySlots = new();
 
     // Quest
     public List<QuestProgress> questProgress = new List<QuestProgress>();
