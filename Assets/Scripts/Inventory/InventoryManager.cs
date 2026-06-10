@@ -30,9 +30,9 @@ public class InventoryManager : MonoBehaviour
 
     public bool AddItem(ItemData item, int amount = 1)
     {
-        if (item == null) return false;
+        if (item == null || amount <= 0) return false;
 
-        // Coba stack dulu
+        // 1. Jika stackable, cari slot pertama yang itemnya sama (karena tidak ada maxStack, langsung gabung semua)
         if (item.isStackable)
         {
             var existing = slots.FirstOrDefault(s => s.CanStack(item));
@@ -45,11 +45,11 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
-        // Cari slot kosong
+        // 2. Jika tidak stackable ATAU tidak ada slot item sejenis, cari slot kosong
         var empty = slots.FirstOrDefault(s => s.IsEmpty);
         if (empty == null)
         {
-            Debug.Log("Inventory penuh!");
+            Debug.LogWarning("Inventory penuh!");
             return false;
         }
 
@@ -61,11 +61,33 @@ public class InventoryManager : MonoBehaviour
 
     public bool RemoveItem(ItemData item, int amount = 1)
     {
-        var slot = slots.FirstOrDefault(s => s.item == item);
-        if (slot == null) return false;
+        if (item == null || amount <= 0) return false;
 
-        slot.amount -= amount;
-        if (slot.amount <= 0) slot.Clear();
+        // Cek total item di seluruh inventory dulu apakah cukup
+        int totalAvailable = slots.Where(s => s.item == item).Sum(s => s.amount);
+        if (totalAvailable < amount) return false;
+
+        int amountToRemove = amount;
+
+        // Iterasi dari belakang untuk mengurangi item (menangani jika ada duplikasi slot item sejenis)
+        for (int i = slots.Count - 1; i >= 0; i--)
+        {
+            if (slots[i].item == item)
+            {
+                if (slots[i].amount > amountToRemove)
+                {
+                    slots[i].amount -= amountToRemove;
+                    amountToRemove = 0;
+                    break;
+                }
+                else
+                {
+                    amountToRemove -= slots[i].amount;
+                    slots[i].Clear();
+                }
+            }
+            if (amountToRemove <= 0) break;
+        }
 
         OnInventoryChanged?.Invoke();
         return true;
@@ -74,13 +96,12 @@ public class InventoryManager : MonoBehaviour
     public void SwapSlots(int indexA, int indexB)
     {
         if (indexA == indexB) return;
-        if (indexA < 0 || indexB < 0) return;
-        if (indexA >= slots.Count || indexB >= slots.Count) return;
+        if (indexA < 0 || indexB < 0 || indexA >= slots.Count || indexB >= slots.Count) return;
 
         var slotA = slots[indexA];
         var slotB = slots[indexB];
 
-        // Kalau sama item dan stackable — merge
+        // Jika sama item dan stackable — langsung merge total
         if (!slotA.IsEmpty && !slotB.IsEmpty && slotA.CanStack(slotB.item))
         {
             slotB.AddAmount(slotA.amount);
@@ -88,48 +109,75 @@ public class InventoryManager : MonoBehaviour
         }
         else
         {
-            // Swap biasa
-            (slots[indexA], slots[indexB]) = (slots[indexB], slots[indexA]);
+            // PENTING: Tukar DATA-nya saja, jangan tukar referensi list (slots[indexA] = slots[indexB])
+            // Supaya tidak merusak susunan indeks yang dibaca oleh UI Component kamu.
+            ItemData tempItem = slotA.item;
+            int tempAmount = slotA.amount;
+
+            slotA.Set(slotB.item, slotB.amount);
+            slotB.Set(tempItem, tempAmount);
         }
 
         OnInventoryChanged?.Invoke();
     }
 
-    // ─── Sort ─────────────────────────────────────────────────────────────────
+    // ─── Sort (In-Place / Bebas GC Alloc) ───────────────────────────────────────
 
     public void SortByName()
     {
-        var filled = slots.Where(s => !s.IsEmpty).OrderBy(s => s.item.itemName).ToList();
-        var empty = slots.Where(s => s.IsEmpty).ToList();
-        slots = filled.Concat(empty).ToList();
+        // Menggunakan Array.Sort internal bawaan List (jauh lebih cepat & hemat memori dibanding LINQ)
+        slots.Sort((a, b) =>
+        {
+            if (a.IsEmpty && b.IsEmpty) return 0;
+            if (a.IsEmpty) return 1; // Slot kosong otomatis pindah ke belakang
+            if (b.IsEmpty) return -1;
+            return string.Compare(a.item.itemName, b.item.itemName, System.StringComparison.Ordinal);
+        });
+
         OnInventoryChanged?.Invoke();
     }
 
     public void SortByType()
     {
-        var filled = slots.Where(s => !s.IsEmpty).OrderBy(s => s.item.itemType).ThenBy(s => s.item.itemName).ToList();
-        var empty = slots.Where(s => s.IsEmpty).ToList();
-        slots = filled.Concat(empty).ToList();
+        slots.Sort((a, b) =>
+        {
+            if (a.IsEmpty && b.IsEmpty) return 0;
+            if (a.IsEmpty) return 1;
+            if (b.IsEmpty) return -1;
+
+            int typeCompare = string.Compare(a.item.itemType.ToString(), b.item.itemType.ToString(), System.StringComparison.Ordinal);
+            if (typeCompare != 0) return typeCompare;
+
+            return string.Compare(a.item.itemName, b.item.itemName, System.StringComparison.Ordinal);
+        });
+
         OnInventoryChanged?.Invoke();
     }
 
-    // ─── Search ───────────────────────────────────────────────────────────────
+    // ─── Search (Optimasi Loop) ────────────────────────────────────────────────
 
     public List<int> SearchIndices(string query)
     {
-        if (string.IsNullOrWhiteSpace(query))
-            return slots.Select((_, i) => i).ToList();
+        var indices = new List<int>();
+        bool isQueryEmpty = string.IsNullOrWhiteSpace(query);
 
-        return slots
-            .Select((slot, i) => (slot, i))
-            .Where(x => !x.slot.IsEmpty &&
-                x.slot.item.itemName.IndexOf(query, System.StringComparison.OrdinalIgnoreCase) >= 0)
-            .Select(x => x.i)
-            .ToList();
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (isQueryEmpty)
+            {
+                indices.Add(i);
+                continue;
+            }
+
+            if (!slots[i].IsEmpty && slots[i].item.itemName.IndexOf(query, System.StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                indices.Add(i);
+            }
+        }
+        return indices;
     }
 
-    // ─── Save / Load ──────────────────────────────────────────────────────────
-
+    //save load data
     public List<InventoryItemSaveData> GetSaveSlots()
     {
         var result = new List<InventoryItemSaveData>();
@@ -150,20 +198,20 @@ public class InventoryManager : MonoBehaviour
 
     public void LoadSlots(List<InventoryItemSaveData> savedSlots)
     {
-        InitSlots();
+        InitSlots(); // Reset semua slot jadi kosong terlebih dahulu
         if (savedSlots == null) return;
 
         foreach (var saved in savedSlots)
         {
             if (saved.slotIndex >= slots.Count) continue;
+
+            // Mengambil data item asli dari dictionary berdasarkan ID yang disimpan
             ItemData item = ItemDictionary.Instance.GetItemByID(saved.itemID);
             if (item == null) continue;
+
             slots[saved.slotIndex].Set(item, saved.amount);
         }
 
         OnInventoryChanged?.Invoke();
     }
-
-    // Legacy support
-    public List<ItemData> items => slots.Where(s => !s.IsEmpty).Select(s => s.item).ToList();
 }

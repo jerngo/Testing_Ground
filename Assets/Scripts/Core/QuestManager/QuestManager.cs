@@ -147,10 +147,13 @@ public class QuestManager : MonoBehaviour
             StartQuest(quest.nextQuest);
 
             // Cek inventory untuk objective collect di quest baru
-            foreach (var item in InventoryManager.Instance.items)
+            foreach (var slot in InventoryManager.Instance.slots)
             {
-                if (item != null)
-                    ReportCollect(item.itemID, 1);
+                if (slot != null && !slot.IsEmpty)
+                {
+                    // Masukkan jumlah total yang ada di slot tersebut, bukan cuma 1
+                    ReportCollect(slot.item.itemID, slot.amount);
+                }
             }
         }
     }
