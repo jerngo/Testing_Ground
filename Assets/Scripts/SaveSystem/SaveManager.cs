@@ -225,9 +225,10 @@ public class SaveManager : MonoBehaviour
 
         PlayerSaveData data = new PlayerSaveData
         {
+            hasData = true,
             hp = 100,
-            posX = 0,
-            posY = 0,
+            posX = -25.28f,  // default spawn position
+            posY = -4.12842989f,
             username = username,
             saveTime = System.DateTime.Now.ToString("dd MMM yyyy HH:mm")
         };
@@ -237,6 +238,8 @@ public class SaveManager : MonoBehaviour
 
     public void SaveGame(string username, int slot)
     {
+        Debug.Log($"[SaveManager] SaveGame dipanggil - username: {username} | slot: {slot}");
+
         if (AccountManager.Instance.currentAccount == null)
         {
             Debug.LogError("No account selected");
@@ -249,9 +252,10 @@ public class SaveManager : MonoBehaviour
         var player = FindFirstObjectByType<PlayerHealth>();
         var playerTransform = player.transform;
 
+        data.hasData = true;
         data.hp = player.currentHP;
-        data.posX = playerTransform.localPosition.x;
-        data.posY = playerTransform.localPosition.y;
+        data.posX = playerTransform.position.x;
+        data.posY = playerTransform.position.y;
         data.username = username;
 
         // Chest
@@ -282,10 +286,28 @@ public class SaveManager : MonoBehaviour
 
     public void ApplyLoadedData()
     {
-        // Player
-        var player = FindFirstObjectByType<PlayerHealth>();
-        player.currentHP = currentSaveData.hp;
-        player.transform.localPosition = new Vector2(currentSaveData.posX, currentSaveData.posY);
+        Debug.Log($"[SaveManager] ApplyLoadedData - hasData: {currentSaveData?.hasData} | hp: {currentSaveData?.hp} | pos: {currentSaveData?.posX}, {currentSaveData?.posY}");
+        // Guard: jangan apply kalau tidak ada save data
+        if (currentSaveData == null || !currentSaveData.hasData) return;
+
+        // Player — ambil dari CharacterManager bukan FindFirstObjectByType
+        var playerObj = CharacterManager.Instance?.currentCharacterObj;
+        if (playerObj != null)
+        {
+            var player = playerObj.GetComponentInChildren<PlayerHealth>();
+            if (player != null)
+            {
+                player.currentHP = currentSaveData.hp;
+                player.transform.position = new Vector2(currentSaveData.posX, currentSaveData.posY);
+
+                // Trigger UI update
+                player.OnHealthChanged?.Invoke(player.currentHP, player.maxHP);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[SaveManager] Karakter belum spawn, data posisi & HP belum diapply");
+        }
 
         // Chest
         foreach (Chest chest in FindObjectsByType<Chest>(FindObjectsSortMode.None))
@@ -306,7 +328,6 @@ public class SaveManager : MonoBehaviour
         inventory.LoadSlots(currentSaveData.inventorySlots);
 
         // Quest
-        Debug.Log("ApplyLoadedData: QuestManager.Instance = " + (QuestManager.Instance == null ? "NULL" : "OK"));
         QuestManager.Instance.LoadSaveData(
             currentSaveData.questProgress,
             questDatabase.allQuests

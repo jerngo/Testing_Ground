@@ -17,6 +17,9 @@ public class StatBoostPassive : PassiveEffect
 
     public override void OnDeactivate(GameObject owner)
     {
+        // Guard: owner sudah destroyed
+        if (owner == null) return;
+
         var controller = owner.GetComponent<PlayerController>();
         if (controller == null) return;
 

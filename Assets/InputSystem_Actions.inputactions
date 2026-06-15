@@ -131,6 +131,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ChangeCharacter",
+                    "type": "Button",
+                    "id": "5e55a5f9-9db5-4fcf-a8f0-c4d9538a8f21",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -571,6 +580,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "SkillF",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "94dbd222-7dca-4067-9ae3-3a6eb2e3076f",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "ChangeCharacter",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -4,17 +4,35 @@ using UnityEngine.UI;
 public class PlayerHealthUI : MonoBehaviour
 {
     public Slider healthSlider;
-    public PlayerHealth playerHealth;
+    private PlayerHealth currentPlayerHealth;
 
     void Start()
     {
-        if (playerHealth != null)
-        {
-            // Subscribe ke event
-            playerHealth.OnHealthChanged += UpdateHealthUI;
+        CharacterManager.Instance.OnCharacterSpawned += OnCharacterSpawned;
+    }
 
-            // Init awal
-            UpdateHealthUI(playerHealth.currentHP, playerHealth.maxHP);
+    void OnDestroy()
+    {
+        if (CharacterManager.Instance != null)
+            CharacterManager.Instance.OnCharacterSpawned -= OnCharacterSpawned;
+
+        // Unsubscribe dari karakter lama
+        if (currentPlayerHealth != null)
+            currentPlayerHealth.OnHealthChanged -= UpdateHealthUI;
+    }
+
+    void OnCharacterSpawned(GameObject character)
+    {
+        // Unsubscribe dari karakter lama dulu
+        if (currentPlayerHealth != null)
+            currentPlayerHealth.OnHealthChanged -= UpdateHealthUI;
+
+        currentPlayerHealth = character.GetComponentInChildren<PlayerHealth>();
+
+        if (currentPlayerHealth != null)
+        {
+            currentPlayerHealth.OnHealthChanged += UpdateHealthUI;
+            UpdateHealthUI(currentPlayerHealth.currentHP, currentPlayerHealth.maxHP);
         }
     }
 
@@ -22,14 +40,5 @@ public class PlayerHealthUI : MonoBehaviour
     {
         healthSlider.maxValue = maxHP;
         healthSlider.value = currentHP;
-    }
-
-    void OnDestroy()
-    {
-        if (playerHealth != null)
-        {
-            // Unsubscribe biar aman
-            playerHealth.OnHealthChanged -= UpdateHealthUI;
-        }
     }
 }

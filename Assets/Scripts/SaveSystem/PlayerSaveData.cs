@@ -4,6 +4,9 @@ using System.Collections.Generic;
 [Serializable]
 public class PlayerSaveData
 {
+    // Flag: true kalau data ini berasal dari save yang benar
+    public bool hasData = false;
+
     // Player
     public int hp;
     public float posX;

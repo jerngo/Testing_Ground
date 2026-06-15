@@ -32,11 +32,14 @@ public class PassiveManager : MonoBehaviour
 
     void OnDestroy()
     {
-        // Deaktifkan semua passive Always
         foreach (var passive in passives)
         {
             if (passive?.effect?.trigger == PassiveTrigger.Always)
-                passive.effect.OnDeactivate(owner);
+            {
+                // Cek owner masih valid sebelum deactivate
+                if (owner != null)
+                    passive.effect.OnDeactivate(owner);
+            }
         }
     }
 

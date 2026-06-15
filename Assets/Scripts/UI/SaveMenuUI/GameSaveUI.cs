@@ -6,6 +6,12 @@ public class GameSaveUI : MonoBehaviour
     public SaveSlotHolder saveSlotHolder;
     bool isOpen = false;
 
+    void Awake()
+    {
+        if (CharacterManager.Instance != null)
+            CharacterManager.Instance.gameSaveUI = this;
+    }
+
     void Start()
     {
         savePanel.SetActive(false);

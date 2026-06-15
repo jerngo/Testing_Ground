@@ -5,9 +5,25 @@ public class SkillHUD : MonoBehaviour
     public SkillSlotUI[] slots;
     private static readonly string[] keys = { "Q", "R", "F" };
 
-    void Start()
+    void OnEnable()
     {
-        var sm = SkillManager.Instance;
+        CharacterManager.Instance.OnCharacterSpawned += OnCharacterSpawned;
+    }
+
+    void OnDisable()
+    {
+        if (CharacterManager.Instance != null)
+            CharacterManager.Instance.OnCharacterSpawned -= OnCharacterSpawned;
+    }
+
+    void OnCharacterSpawned(GameObject character)
+    {
+        var sm = character.GetComponentInChildren<SkillManager>();
+        if (sm == null) return;
+
+        // Unsubscribe dari karakter lama dulu
+        if (SkillManager.Instance != null)
+            SkillManager.Instance.OnCooldownUpdated -= HandleCooldownUpdated;
 
         for (int i = 0; i < slots.Length; i++)
         {
@@ -16,12 +32,6 @@ public class SkillHUD : MonoBehaviour
         }
 
         sm.OnCooldownUpdated += HandleCooldownUpdated;
-    }
-
-    void OnDestroy()
-    {
-        if (SkillManager.Instance != null)
-            SkillManager.Instance.OnCooldownUpdated -= HandleCooldownUpdated;
     }
 
     void HandleCooldownUpdated(int index, float remaining, float total)

@@ -217,6 +217,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ChangeCharacter"",
+                    ""type"": ""Button"",
+                    ""id"": ""5e55a5f9-9db5-4fcf-a8f0-c4d9538a8f21"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -657,6 +666,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""SkillF"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""94dbd222-7dca-4067-9ae3-3a6eb2e3076f"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""ChangeCharacter"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1258,6 +1278,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_SkillQ = m_Player.FindAction("SkillQ", throwIfNotFound: true);
         m_Player_SkillR = m_Player.FindAction("SkillR", throwIfNotFound: true);
         m_Player_SkillF = m_Player.FindAction("SkillF", throwIfNotFound: true);
+        m_Player_ChangeCharacter = m_Player.FindAction("ChangeCharacter", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1365,6 +1386,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_SkillQ;
     private readonly InputAction m_Player_SkillR;
     private readonly InputAction m_Player_SkillF;
+    private readonly InputAction m_Player_ChangeCharacter;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1433,6 +1455,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @SkillF => m_Wrapper.m_Player_SkillF;
         /// <summary>
+        /// Provides access to the underlying input action "Player/ChangeCharacter".
+        /// </summary>
+        public InputAction @ChangeCharacter => m_Wrapper.m_Player_ChangeCharacter;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1500,6 +1526,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @SkillF.started += instance.OnSkillF;
             @SkillF.performed += instance.OnSkillF;
             @SkillF.canceled += instance.OnSkillF;
+            @ChangeCharacter.started += instance.OnChangeCharacter;
+            @ChangeCharacter.performed += instance.OnChangeCharacter;
+            @ChangeCharacter.canceled += instance.OnChangeCharacter;
         }
 
         /// <summary>
@@ -1553,6 +1582,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @SkillF.started -= instance.OnSkillF;
             @SkillF.performed -= instance.OnSkillF;
             @SkillF.canceled -= instance.OnSkillF;
+            @ChangeCharacter.started -= instance.OnChangeCharacter;
+            @ChangeCharacter.performed -= instance.OnChangeCharacter;
+            @ChangeCharacter.canceled -= instance.OnChangeCharacter;
         }
 
         /// <summary>
@@ -1951,6 +1983,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSkillF(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ChangeCharacter" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnChangeCharacter(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

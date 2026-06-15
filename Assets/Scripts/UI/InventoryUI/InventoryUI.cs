@@ -19,6 +19,12 @@ public class InventoryUI : MonoBehaviour
     private List<InventorySlotUI> slotUIs = new();
     private List<int> highlightedIndices = new();
 
+    void Awake()
+    {
+        if (CharacterManager.Instance != null)
+            CharacterManager.Instance.inventoryUI = this;
+    }
+
     void Start()
     {
         GenerateGrid();
