@@ -226,6 +226,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleLeaderboard"",
+                    ""type"": ""Button"",
+                    ""id"": ""5ed06365-cd60-478d-90cb-99d1aa5076eb"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -677,6 +686,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""ChangeCharacter"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""18c65cb7-9f94-4281-b3f0-07a8e15a1942"",
+                    ""path"": ""<Keyboard>/h"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""ToggleLeaderboard"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1279,6 +1299,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_SkillR = m_Player.FindAction("SkillR", throwIfNotFound: true);
         m_Player_SkillF = m_Player.FindAction("SkillF", throwIfNotFound: true);
         m_Player_ChangeCharacter = m_Player.FindAction("ChangeCharacter", throwIfNotFound: true);
+        m_Player_ToggleLeaderboard = m_Player.FindAction("ToggleLeaderboard", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1387,6 +1408,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_SkillR;
     private readonly InputAction m_Player_SkillF;
     private readonly InputAction m_Player_ChangeCharacter;
+    private readonly InputAction m_Player_ToggleLeaderboard;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1459,6 +1481,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @ChangeCharacter => m_Wrapper.m_Player_ChangeCharacter;
         /// <summary>
+        /// Provides access to the underlying input action "Player/ToggleLeaderboard".
+        /// </summary>
+        public InputAction @ToggleLeaderboard => m_Wrapper.m_Player_ToggleLeaderboard;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1529,6 +1555,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @ChangeCharacter.started += instance.OnChangeCharacter;
             @ChangeCharacter.performed += instance.OnChangeCharacter;
             @ChangeCharacter.canceled += instance.OnChangeCharacter;
+            @ToggleLeaderboard.started += instance.OnToggleLeaderboard;
+            @ToggleLeaderboard.performed += instance.OnToggleLeaderboard;
+            @ToggleLeaderboard.canceled += instance.OnToggleLeaderboard;
         }
 
         /// <summary>
@@ -1585,6 +1614,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @ChangeCharacter.started -= instance.OnChangeCharacter;
             @ChangeCharacter.performed -= instance.OnChangeCharacter;
             @ChangeCharacter.canceled -= instance.OnChangeCharacter;
+            @ToggleLeaderboard.started -= instance.OnToggleLeaderboard;
+            @ToggleLeaderboard.performed -= instance.OnToggleLeaderboard;
+            @ToggleLeaderboard.canceled -= instance.OnToggleLeaderboard;
         }
 
         /// <summary>
@@ -1990,6 +2022,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnChangeCharacter(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ToggleLeaderboard" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnToggleLeaderboard(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
