@@ -22,11 +22,13 @@ public class CharacterSelectionInput : MonoBehaviour
     public void OnMove(InputAction.CallbackContext ctx)
     {
         CharacterManager.Instance?.CurrentController?.OnMove(ctx);
+        CharacterManager.Instance?.CurrentSpineController?.OnMove(ctx);
     }
 
     public void OnJump(InputAction.CallbackContext ctx)
     {
         CharacterManager.Instance?.CurrentController?.OnJump(ctx);
+        CharacterManager.Instance?.CurrentSpineController?.OnJumpInput(ctx);
     }
 
     public void OnRun(InputAction.CallbackContext ctx)
@@ -37,6 +39,7 @@ public class CharacterSelectionInput : MonoBehaviour
     public void OnAttack(InputAction.CallbackContext ctx)
     {
         CharacterManager.Instance?.CurrentController?.OnAttack(ctx);
+        CharacterManager.Instance?.CurrentSpineController?.OnAttack(ctx);
     }
 
     public void OnShield(InputAction.CallbackContext ctx)
@@ -47,11 +50,13 @@ public class CharacterSelectionInput : MonoBehaviour
     public void OnOpenMenu(InputAction.CallbackContext ctx)
     {
         CharacterManager.Instance?.CurrentController?.OnOpenMenu(ctx);
+        CharacterManager.Instance?.CurrentSpineController?.OnOpenMenu(ctx);
     }
 
     public void OnOpenBag(InputAction.CallbackContext ctx)
     {
         CharacterManager.Instance?.CurrentController?.OnOpenBag(ctx);
+        CharacterManager.Instance?.CurrentSpineController?.OnOpenBag(ctx);
     }
 
     public void OnInteract(InputAction.CallbackContext ctx)

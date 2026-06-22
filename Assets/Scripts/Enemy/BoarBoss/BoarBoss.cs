@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BoarBoss : EnemyBase
 {
-    private PlayerController player;
+    private Transform targetPlayer;
 
     [Header("Detection & Attack Ranges")]
     [SerializeField] private float detectRange = 8f;
@@ -45,9 +45,32 @@ public class BoarBoss : EnemyBase
 
     private void InitPlayer()
     {
-        if (player == null)
+        if (CharacterManager.Instance != null)
         {
-            player = FindFirstObjectByType<PlayerController>();
+            if (CharacterManager.Instance.CurrentController != null)
+            {
+                targetPlayer = CharacterManager.Instance.CurrentController.transform;
+                return;
+            }
+
+            if (CharacterManager.Instance.CurrentSpineController != null)
+            {
+                targetPlayer = CharacterManager.Instance.CurrentSpineController.transform;
+                return;
+            }
+        }
+
+        PlayerController oldPlayer = FindFirstObjectByType<PlayerController>();
+        if (oldPlayer != null)
+        {
+            targetPlayer = oldPlayer.transform;
+            return;
+        }
+
+        NewBasicPlatformerController2D newPlayer = FindFirstObjectByType<NewBasicPlatformerController2D>();
+        if (newPlayer != null)
+        {
+            targetPlayer = newPlayer.transform;
         }
     }
 
@@ -55,14 +78,13 @@ public class BoarBoss : EnemyBase
     {
         if (IsDead) return;
 
-        // Fail-safe jika player belum ditemukan atau telah di-destroy/respawn
-        if (player == null)
+        if (targetPlayer == null)
         {
             InitPlayer();
             return;
         }
 
-        float distance = Vector2.Distance(transform.position, player.transform.position);
+        float distance = Vector2.Distance(transform.position, targetPlayer.position);
 
         HandleBehavior(distance);
     }
@@ -93,7 +115,7 @@ public class BoarBoss : EnemyBase
 
     private void ChasePlayer()
     {
-        Vector2 direction = (player.transform.position - transform.position).normalized;
+        Vector2 direction = (targetPlayer.position - transform.position).normalized;
 
         transform.position += (Vector3)direction * moveSpeed * Time.deltaTime;
 
@@ -112,7 +134,7 @@ public class BoarBoss : EnemyBase
         yield return new WaitForSeconds(chargeWindupTime);
 
         // Kunci arah target sesaat sebelum menerjang (menghindari bos berputar di tengah jalan)
-        Vector2 chargeDirection = (player.transform.position - transform.position).normalized;
+        Vector2 chargeDirection = (targetPlayer.position - transform.position).normalized;
         Flip(chargeDirection.x);
 
         float timer = 0f;

@@ -17,6 +17,7 @@ public class CharacterManager : MonoBehaviour
     public InventoryUI inventoryUI;
 
     public PlayerController CurrentController { get; private set; }
+    public NewBasicPlatformerController2D CurrentSpineController { get; private set; }
     public PlayerInteraction CurrentInteraction { get; private set; }
     public SkillManager CurrentSkillManager { get; private set; }
 
@@ -91,19 +92,30 @@ public class CharacterManager : MonoBehaviour
 
         // Inject referensi
         CurrentController = currentCharacterObj.GetComponentInChildren<PlayerController>();
+        CurrentSpineController = currentCharacterObj.GetComponentInChildren<NewBasicPlatformerController2D>();
+
         CurrentInteraction = currentCharacterObj.GetComponentInChildren<PlayerInteraction>();
         CurrentSkillManager = currentCharacterObj.GetComponentInChildren<SkillManager>();
 
         // Auto-find kalau belum di-assign di Inspector
         if (gameSaveUI == null)
             gameSaveUI = FindFirstObjectByType<GameSaveUI>();
+
         if (inventoryUI == null)
             inventoryUI = FindFirstObjectByType<InventoryUI>();
 
+        // Karakter lama
         if (CurrentController != null)
         {
             CurrentController.gameSaveUI = gameSaveUI;
             CurrentController.inventoryUI = inventoryUI;
+        }
+
+        // Karakter Spine baru
+        if (CurrentSpineController != null)
+        {
+            CurrentSpineController.gameSaveUI = gameSaveUI;
+            CurrentSpineController.inventoryUI = inventoryUI;
         }
 
         var newHealth = currentCharacterObj.GetComponentInChildren<PlayerHealth>();

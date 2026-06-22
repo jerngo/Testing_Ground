@@ -20,13 +20,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bcd9546e411aa2244be127b40fdbc249
-    m_Address: CharacterB
+  - m_GUID: d9396f9aa09a10f45ae71d1aaa5c24ba
+    m_Address: CharacterC
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d9396f9aa09a10f45ae71d1aaa5c24ba
-    m_Address: CharacterC
+  - m_GUID: fd0bc25115e387048a9aed62a9f29d8b
+    m_Address: CharacterB
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
