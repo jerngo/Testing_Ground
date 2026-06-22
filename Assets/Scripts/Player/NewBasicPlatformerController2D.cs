@@ -25,7 +25,7 @@ public class NewBasicPlatformerController2D : MonoBehaviour
 
     [Header("Ground Check")]
     [SerializeField] Transform groundCheck;
-    [SerializeField] float groundCheckRadius = 0.15f;
+    [SerializeField] Vector2 groundCheckSize = new Vector2(0.4f, 0.08f);
     [SerializeField] LayerMask groundLayer;
 
     [Header("Moving")]
@@ -54,6 +54,8 @@ public class NewBasicPlatformerController2D : MonoBehaviour
 
     [SerializeField] PlayerCombat playerCombat;
 
+    public bool IsDead = false;
+
     public event UnityAction OnJump;
     public event UnityAction OnLand;
     public event UnityAction OnHardLand;
@@ -72,6 +74,7 @@ public class NewBasicPlatformerController2D : MonoBehaviour
     bool isAttacking;
 
     bool isGrounded;
+    public bool IsGrounded => isGrounded;
     bool wasGrounded;
     bool landed;
     bool hardLand;
@@ -86,6 +89,9 @@ public class NewBasicPlatformerController2D : MonoBehaviour
 
     CharacterState previousState = CharacterState.None;
     CharacterState currentState = CharacterState.None;
+
+    [SerializeField] float groundedGraceTime = 0.1f;
+    float lastGroundedTime;
 
     void Reset()
     {
@@ -128,7 +134,13 @@ public class NewBasicPlatformerController2D : MonoBehaviour
 
     void CacheGroundState()
     {
-        isGrounded = CheckGrounded();
+        bool rawGrounded = CheckGrounded();
+
+        if (rawGrounded)
+            lastGroundedTime = Time.time;
+
+        isGrounded = Time.time - lastGroundedTime <= groundedGraceTime;
+
         landed = !wasGrounded && isGrounded;
         hardLand = false;
         doJump = false;
@@ -139,9 +151,10 @@ public class NewBasicPlatformerController2D : MonoBehaviour
         if (groundCheck == null)
             return false;
 
-        return Physics2D.OverlapCircle(
+        return Physics2D.OverlapBox(
             groundCheck.position,
-            groundCheckRadius,
+            groundCheckSize,
+            0f,
             groundLayer
         );
     }
@@ -187,6 +200,12 @@ public class NewBasicPlatformerController2D : MonoBehaviour
             jumpSpeed
         );
 
+        isGrounded = false;
+        wasGrounded = false;
+
+        currentState = CharacterState.Fall;
+        previousState = CharacterState.None;
+
         minimumJumpEndTime = Time.time + minimumJumpDuration;
     }
 
@@ -221,23 +240,22 @@ public class NewBasicPlatformerController2D : MonoBehaviour
 
     void UpdateState()
     {
-        if (isGrounded)
-        {
-            if (doCrouch)
-                currentState = CharacterState.Crouch;
-            else if (Mathf.Approximately(input.x, 0))
-                currentState = CharacterState.Idle;
-            else
-                currentState = Mathf.Abs(input.x) > 0.6f
-                    ? CharacterState.Run
-                    : CharacterState.Walk;
+        bool reallyFalling = rb.linearVelocity.y < -0.5f;
 
+        if (!isGrounded && reallyFalling)
+        {
+            currentState = CharacterState.Fall;
             return;
         }
 
-        currentState = rb.linearVelocity.y > 0
-            ? CharacterState.Rise
-            : CharacterState.Fall;
+        if (doCrouch)
+            currentState = CharacterState.Crouch;
+        else if (Mathf.Approximately(input.x, 0))
+            currentState = CharacterState.Idle;
+        else
+            currentState = Mathf.Abs(input.x) > 0.6f
+                ? CharacterState.Run
+                : CharacterState.Walk;
     }
 
     void UpdateLocomotionAnimation()
@@ -414,6 +432,6 @@ public class NewBasicPlatformerController2D : MonoBehaviour
             return;
 
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        Gizmos.DrawWireCube(groundCheck.position, groundCheckSize);
     }
 }

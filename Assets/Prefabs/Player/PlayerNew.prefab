@@ -117,7 +117,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2711075111324231239}
   - component: {fileID: 2225995242999862053}
-  - component: {fileID: 7643625840633929263}
   - component: {fileID: 7977139154671772995}
   - component: {fileID: 1161645616537587842}
   - component: {fileID: 6128198972189488032}
@@ -129,6 +128,7 @@ GameObject:
   - component: {fileID: 170946647672105586}
   - component: {fileID: 8412903904525895187}
   - component: {fileID: 7961308722728709661}
+  - component: {fileID: 70926442532773883}
   m_Layer: 7
   m_Name: Knight2
   m_TagString: Player
@@ -324,25 +324,6 @@ MonoBehaviour:
   m_DefaultActionMap: 
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &7643625840633929263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 844302723528807781}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d55a3bd6ac81af44b2f9a4447f2ae72, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  skeletonAnimation: {fileID: 4814616304070027744}
-  eventName: footstep
-  audioSource: {fileID: 5339246190843347766}
-  audioClip: {fileID: 8300000, guid: e885484e1bc99fb47a0ac3f6bfa586b1, type: 3}
-  basePitch: 1
-  randomPitchOffset: 0.2
-  logDebugMessage: 0
 --- !u!114 &7977139154671772995
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397,8 +378,8 @@ MonoBehaviour:
   OnJump:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7643625840633929263}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 70926442532773883}
+        m_TargetAssemblyTypeName: NewAudioEventHandler, Assembly-CSharp
         m_MethodName: Play
         m_Mode: 1
         m_Arguments:
@@ -412,8 +393,8 @@ MonoBehaviour:
   OnLand:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7643625840633929263}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 70926442532773883}
+        m_TargetAssemblyTypeName: NewAudioEventHandler, Assembly-CSharp
         m_MethodName: Play
         m_Mode: 1
         m_Arguments:
@@ -656,6 +637,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc85330d11858094eb4da5d4ac20bc81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
+--- !u!114 &70926442532773883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 844302723528807781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9f705d4912cd2541b41fb08956de293, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NewAudioEventHandler
+  skeletonAnimation: {fileID: 4814616304070027744}
+  eventName: footstep
+  audioSource: {fileID: 5339246190843347766}
+  audioClip: {fileID: 8300000, guid: e885484e1bc99fb47a0ac3f6bfa586b1, type: 3}
+  basePitch: 1
+  randomPitchOffset: 0.2
+  logDebugMessage: 0
 --- !u!1 &1423036267699696128
 GameObject:
   m_ObjectHideFlags: 0

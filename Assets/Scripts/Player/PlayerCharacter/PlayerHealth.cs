@@ -16,6 +16,7 @@ public class PlayerHealth : MonoBehaviour
     public float invincibleTime = 0.5f;
 
     PlayerController controller;
+    NewBasicPlatformerController2D spineController;
 
     Rigidbody2D rb;
 
@@ -28,6 +29,8 @@ public class PlayerHealth : MonoBehaviour
         anim = GetComponent<Animator>();
 
         controller = GetComponent<PlayerController>();
+        spineController = GetComponent<NewBasicPlatformerController2D>();
+
         rb = GetComponent<Rigidbody2D>();
 
         OnHealthChanged?.Invoke(currentHP, maxHP);
@@ -85,13 +88,15 @@ public class PlayerHealth : MonoBehaviour
         Debug.Log("Player Dead");
 
         if (anim != null)
-        {
             anim.SetTrigger("Death");
-        }
 
-        controller.IsDead = true;
+        if (controller != null)
+            controller.IsDead = true;
+
+        if (spineController != null)
+            spineController.IsDead = true;
+
         GameManager.Instance.LoadSceneWithFade("MainMenuScene");
-        // disable movement nanti di sini
     }
 
     public void ApplyKnockback(Vector2 hitSourcePosition)
